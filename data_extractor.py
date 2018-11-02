@@ -8,46 +8,37 @@ def get_post_content(url):
     context = ssl._create_unverified_context()
     webpage = urlopen(req, context=context).read()
     soup = BeautifulSoup(webpage, 'html.parser')
-    for div in soup.find_all("div", {'class': 'dolna-ramka'}):
-        div.decompose()
-    for div in soup.find_all("div", {'class': 'sidebar-box-wrap'}):
-        div.decompose()
-    for div in soup.find_all("div", {'id': 'comment-wrap'}):
-        div.decompose()
-    for div in soup.find_all("div", {'class': 'breadcrumbs'}):
-        div.decompose()
-    for div in soup.find_all("div", {'id': 'copyright'}):
-        div.decompose()
-    for div in soup.find_all("ul", {'class': 'breadcrumbs'}):
-        div.decompose()
     text = ""
-    for line in soup.select('#wrap')[0].getText().splitlines():
-        if line is not '':
-            text += "\n" + line
+    for article in soup.find_all('article'):
+        for description in article.find_all("p", {'itemprop': 'description'}):
+            text += description.getText()
+        for descriptioncnt in article.find_all("div", {'id': 'game-description-cnt'}):
+            for paragraph in descriptioncnt.find_all("p"):
+                text += "\n" + paragraph.getText()
+    #for line in soup.select('#wrap')[0].getText().splitlines():
+    #    if line is not '':
+    #        text += "\n" + line
     return text
 
 
 def get_posts(start, end):
     posts = []
     for pageNumber in range(start, end+1):
-        req = Request('https://zaufanatrzeciastrona.pl/page/' + str(pageNumber), headers={'User-Agent': 'Mozilla/5.0'})
+        print(pageNumber)
+        req = Request('https://www.gry-online.pl/gry/22-' + str(pageNumber), headers={'User-Agent': 'Mozilla/5.0'})
         context = ssl._create_unverified_context()
         webpage = urlopen(req, context=context).read()
         soup = BeautifulSoup(webpage, 'html.parser')
-        for post in soup.find_all('div'):
-            if 'class' in post.attrs:
-                if 'thumbnail-wrap' in post['class']:
-                    posts.append(post.a['href'])
-        print(pageNumber)
+        for div in soup.find_all("div", {'class': 'lista-gry'}):
+            for box in div.find_all("div", {'class': 'box'}):
+                posts.append('https://www.gry-online.pl' + box.a['href'])
     return posts
 
 
-#print(get_post_content("https://zaufanatrzeciastrona.pl/post/przed-nami-advanced-threat-summit-2018-a-dla-was-kod-rabatowy/"))
-for post in get_posts(1, 20):
+#print(get_posts(1, 1))
+#print(get_post_content("https://www.gry-online.pl/gry/soulcalibur-vi/zc50dc"))
+for post in get_posts(1, 854):
     print(post)
     if not Path('posts/' + post.split('/')[4] + '.txt').exists():
-        print("file don't exist")
         with open('posts/' + post.split('/')[4] + '.txt', 'w') as f:
             f.write(get_post_content(post))
-    else:
-        print("file exist")
