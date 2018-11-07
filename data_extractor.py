@@ -68,7 +68,7 @@ def get_posts(start, end, page, divname):
 #         with open('posts/' + post.split('/')[4] + '.txt', 'w') as f:
 #             f.write(get_post_content(post))
 
-for post in get_posts(1, 10, 'https://www.gry-online.pl/recenzje-gier.asp?STR=','lista'): #121 ostatnia strona
+for post in get_posts(1, 121, 'https://www.gry-online.pl/recenzje-gier.asp?STR=','lista'): #121 ostatnia strona
     print(post)
     if not Path('posts/' + post.split('/')[3] + '.txt').exists():
         with open('posts/' + post.split('/')[3] + '.txt', 'w') as f:
