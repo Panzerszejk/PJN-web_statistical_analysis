@@ -96,6 +96,7 @@ for post in get_posts(1, 121, 'https://www.gry-online.pl/recenzje-gier.asp?STR='
 #         with open('posts/' + post.split('/')[3] + '.txt', 'w') as f:
 #             f.write(get_post_content2(post))
 
+
 for post in get_posts2(2014, 2018, 'https://www.gry-online.pl/S017.asp?ROK=','lista'): #2014-2018 ostatnia strona
     print(post)
     if not Path('posts/' + post.split('/')[3] + '.txt').exists():
