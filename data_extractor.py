@@ -62,17 +62,35 @@ def get_posts(start, end, page, divname):
 
 #print(get_posts(1, 1))
 #print(get_post_content("https://www.gry-online.pl/gry/soulcalibur-vi/zc50dc"))
-# for post in get_posts(1, 854, 'https://www.gry-online.pl/gry/22-','lista-gry'):
-#     print(post)
-#     if not Path('posts/' + post.split('/')[4] + '.txt').exists():
-#         with open('posts/' + post.split('/')[4] + '.txt', 'w') as f:
-#             f.write(get_post_content(post))
+for post in get_posts(1, 854, 'https://www.gry-online.pl/gry/22-','lista-gry'): #854 ostatnia strona
+    print(post)
+    if not Path('posts/' + post.split('/')[4] + '.txt').exists():
+        with open('posts/' + post.split('/')[4] + '.txt', 'w') as f:
+            f.write(get_post_content(post))
 
 for post in get_posts(1, 121, 'https://www.gry-online.pl/recenzje-gier.asp?STR=','lista'): #121 ostatnia strona
     print(post)
     if not Path('posts/' + post.split('/')[3] + '.txt').exists():
         with open('posts/' + post.split('/')[3] + '.txt', 'w') as f:
             f.write(get_post_content2(post))
+
+# for post in get_posts(1, 5, 'https://www.gry-online.pl/gry-przed-premiera.asp?STR=','lista'): #5 ostatnia strona, Płatny content
+#     print(post)
+#     if not Path('posts/' + post.split('/')[3] + '.txt').exists():
+#         with open('posts/' + post.split('/')[3] + '.txt', 'w') as f:
+#             f.write(get_post_content2(post))
+
+<<<<<<< HEAD
+for post in get_posts(1, 121, 'https://www.gry-online.pl/recenzje-gier.asp?STR=','lista'): #121 ostatnia strona
+=======
+for post in get_posts(2014, 2018, 'https://www.gry-online.pl/S017.asp?ROK=','lista'): #2014-2018 ostatnia strona
+>>>>>>> 21493157b0d734d2e06ce9132d35f1681aa36257
+    print(post)
+    if not Path('posts/' + post.split('/')[3] + '.txt').exists():
+        with open('posts/' + post.split('/')[3] + '.txt', 'w') as f:
+            f.write(get_post_content2(post))
+
+
 
 
 #print(get_post_content2('https://www.gry-online.pl/S020.asp?ID=13040 '))
