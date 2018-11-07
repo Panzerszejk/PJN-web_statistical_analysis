@@ -1,6 +1,7 @@
 import os
 import matplotlib.pyplot as plt
 import numpy as np
+import bisect
 from collections import Counter
 
 
@@ -28,29 +29,24 @@ for i, element in enumerate(Counter(word_list).most_common()):
 
 print("Most common complete")
 
-words_used = []
-isthere = True
-word_count =0
+words_dict = Counter()
+word_count = 0
 word_unique_count = 0
-plot_count_list =[]
+plot_count_list =[0]
 
 for word in word_list:
-    isthere = False
     word_count += 1
-    for element in words_used:
-        if element == word:
-            isthere = True
-            break
 
-    if not isthere:
-        word_unique_count += 1
-        words_used.append(word)
+    words_dict[word] += 1
 
-    if word_count % 10000:
-       plot_count_list.append(word_unique_count)
+    if word_count%50000 == 0:
+        word_unique_count = len(words_dict)
+        plot_count_list.append(word_unique_count)
+
+print("Words growth")
 
 
-print("Unique word complete w_count: "+str(word_count)+' unique_count: '+str(word_unique_count))
+print("Words total: "+str(word_count)+' unique: '+str(word_unique_count))
 #colors = ['gold', 'yellowgreen', 'lightcoral', 'lightskyblue']
 
 # Plot
@@ -59,6 +55,6 @@ plt.pie(sizes, labels=labels, autopct='%1.1f%%')
 plt.axis('equal')
 plt.show()
 
-plot_count_labels = np.arange(0,word_count,1000)
-
-plt.plot(plot_count_list, plot_count_labels, 'ro')
+plot_count_labels = np.arange(0,word_count,50000)
+plt.plot(plot_count_labels,plot_count_list, 'ro')
+plt.show()
