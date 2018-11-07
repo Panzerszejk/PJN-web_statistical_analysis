@@ -34,16 +34,19 @@ def get_post_content2(url):
 
         btn = soup.find('div', {'class': 'np-right'})
         if btn:
-            nextpage=btn.a['href']
-            nexturl= url.split('?') # strony wystepuja 2 odmianach więc na sztywno nie przypisze a link zawiera tylko końcowkę zaczynając od '?'
-            req = Request(nexturl[0]+nextpage, headers={'User-Agent': 'Mozilla/5.0'})
-            print('     '+nexturl[0]+nextpage)
-            context = ssl._create_unverified_context()
-            webpage = urlopen(req, context=context).read()
-            soup = BeautifulSoup(webpage, 'html.parser')
+            btn_a = btn.find('a')
+            if btn_a:
+                nextpage = btn.a['href']
+                nexturl= url.split('?') # strony wystepuja 2 odmianach więc na sztywno nie przypisze a link zawiera tylko końcowkę zaczynając od '?'
+                req = Request(nexturl[0]+nextpage, headers={'User-Agent': 'Mozilla/5.0'})
+                print('     '+nexturl[0]+nextpage)
+                context = ssl._create_unverified_context()
+                webpage = urlopen(req, context=context).read()
+                soup = BeautifulSoup(webpage, 'html.parser')
+            else:
+                break
         else:
             break
-
     return text
 
 
@@ -58,6 +61,19 @@ def get_posts(start, end, page, divname):
         for div in soup.find_all("div", {'class': divname}):
             for box in div.find_all("div", {'class': 'box'}):
                 posts.append('https://www.gry-online.pl' + box.a['href'])
+    return posts
+
+def get_posts2(start, end, page, divname):
+    posts = []
+    for pageNumber in range(start, end+1):
+        print(pageNumber)
+        req = Request(page + str(pageNumber), headers={'User-Agent': 'Mozilla/5.0'})
+        context = ssl._create_unverified_context()
+        webpage = urlopen(req, context=context).read()
+        soup = BeautifulSoup(webpage, 'html.parser')
+        for div in soup.find_all("div", {'class': divname}):
+            for box in div.find_all("div", {'class': 'box'}):
+                posts.append('https://www.gry-online.pl/' + box.a['href'])
     return posts
 
 #print(get_posts(1, 1))
@@ -80,7 +96,7 @@ for post in get_posts(1, 121, 'https://www.gry-online.pl/recenzje-gier.asp?STR='
 #         with open('posts/' + post.split('/')[3] + '.txt', 'w') as f:
 #             f.write(get_post_content2(post))
 
-for post in get_posts(2014, 2018, 'https://www.gry-online.pl/S017.asp?ROK=','lista'): #2014-2018 ostatnia strona
+for post in get_posts2(2014, 2018, 'https://www.gry-online.pl/S017.asp?ROK=','lista'): #2014-2018 ostatnia strona
     print(post)
     if not Path('posts/' + post.split('/')[3] + '.txt').exists():
         with open('posts/' + post.split('/')[3] + '.txt', 'w') as f:
