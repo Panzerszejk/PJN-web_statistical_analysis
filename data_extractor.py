@@ -117,42 +117,58 @@ def get_posts_guide(start, end, page):
                 posts.append(post)
     return posts
 
+source = [['https://www.gry-online.pl/gry/22-','lista-gry',854,1],
+          ['https://www.gry-online.pl/recenzje-gier.asp?STR=','lista',121,1],
+          ['https://www.gry-online.pl/gry-przed-premiera.asp?STR=','lista',5,1],
+          ['https://www.gry-online.pl/S017.asp?ROK=','lista',2018,2014]]
 
-# for post in get_posts(1, 1, 'https://www.gry-online.pl/gry/22-','lista-gry'): #854 ostatnia strona
-#     print(post[1])
-#     print(post[0])
-#     if not Path('posts/' + post[1] + '.txt').exists():
-#         with open('posts/' + post[1] + '.txt', 'w') as f:
-#             f.write(get_post_content(post[0]))
-# #
-# for post in get_posts(1, 1, 'https://www.gry-online.pl/recenzje-gier.asp?STR=','lista'): #121 ostatnia strona
-#     print(post[1])
-#     print(post[0])
-#     if not Path('posts/' + post[1] + '.txt').exists():
-#         with open('posts/' + post[1] + '.txt', 'w') as f:
-#             f.write(get_post_content2(post[0]))
-#
-# for post in get_posts(1, 1, 'https://www.gry-online.pl/gry-przed-premiera.asp?STR=','lista'): #5 ostatnia strona
-#     print(post[1])
-#     print(post[0])
-#     if not Path('posts/' + post[1] + '.txt').exists():
-#         with open('posts/' + post[1] + '.txt', 'w') as f:
-#             f.write(get_post_content2(post[0]))
+for i in range(0, 3):
+    for post in get_posts(source[i][3], source[i][2], source[i][0], source[i][1]):
+        #print(post[1])
+        #print(post[0])
+        post[1] = post[1].replace('/', ':')
+        filename = 'posts/' + post[1] + '.txt'
+        print(filename)
+        if not Path(filename).exists():
+            with open(filename) as f:
+                f.write(get_post_content(post[0]))
 
-# for post in get_posts(2014, 2014, 'https://www.gry-online.pl/S017.asp?ROK=','lista'): #2014-2018 ostatnia strona
-#         print(post[1])
-#         print(post[0])
-#         if not Path('posts/' + post[1] + '.txt').exists():
-#             with open('posts/' + post[1] + '.txt', 'w') as f:
-#                 f.write(get_post_content2(post[0]))
 
-for post in get_posts_guide(1,1,'https://www.gry-online.pl/poradniki-do-gier.asp?SOR=1&STR='): #83 ostatnia strona
+for post in get_posts_guide(1, 83, 'https://www.gry-online.pl/poradniki-do-gier.asp?SOR=1&STR='): #83 ostatnia strona
         print(post[1])
         print(post[0])
         if not Path('posts/' + post[1] + '.txt').exists():
             with open('posts/' + post[1] + '.txt', 'w') as f:
                 f.write(get_post_content3(post[0]))
 
+
+# for post in get_posts(1, 854, 'https://www.gry-online.pl/gry/22-','lista-gry'): #854 ostatnia strona
+#     print(post[1])
+#     print(post[0])
+#     if not Path('posts/' + post[1] + '.txt').exists():
+#         with open('posts/' + post[1] + '.txt', 'w') as f:
+#             f.write(get_post_content(post[0]))
+# #
+# for post in get_posts(1, 121, 'https://www.gry-online.pl/recenzje-gier.asp?STR=','lista'): #121 ostatnia strona
+#     print(post[1])
+#     print(post[0])
+#     if not Path('posts/' + post[1] + '.txt').exists():
+#         with open('posts/' + post[1] + '.txt', 'w') as f:
+#             f.write(get_post_content2(post[0]))
+#
+# for post in get_posts(1, 5, 'https://www.gry-online.pl/gry-przed-premiera.asp?STR=','lista'): #5 ostatnia strona
+#     print(post[1])
+#     print(post[0])
+#     if not Path('posts/' + post[1] + '.txt').exists():
+#         with open('posts/' + post[1] + '.txt', 'w') as f:
+#             f.write(get_post_content2(post[0]))
+#
+# for post in get_posts(2014, 2018, 'https://www.gry-online.pl/S017.asp?ROK=','lista'): #2014-2018 ostatnia strona
+#         print(post[1])
+#         print(post[0])
+#         if not Path('posts/' + post[1] + '.txt').exists():
+#             with open('posts/' + post[1] + '.txt', 'w') as f:
+#                 f.write(get_post_content2(post[0]))
 
 
 # print(get_posts_guide(4,4,'https://www.gry-online.pl/poradniki-do-gier.asp?SOR=1&STR='))
