@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 import ssl
 from urllib.request import Request, urlopen
 from pathlib import Path
+import os
 
 def get_post_content(url):
     req = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
@@ -110,17 +111,14 @@ def get_posts_guide(start, end, page):
         soup = BeautifulSoup(webpage, 'html.parser')
         for div in soup.find_all("div", {'class': 'gp-main16-list c-size'}):
             for box in div.find_all("a", {'class': 'gp16-box-2'}):
-                post = []
-                post.append('https://www.gry-online.pl' + box['href'])
-                header = box.h4.string
-                post.append(header)
-                posts.append(post)
+                posts.append(['https://www.gry-online.pl' + box['href'], box.h4.string])
     return posts
 
 source = [['https://www.gry-online.pl/gry/22-','lista-gry',854,1],
           ['https://www.gry-online.pl/recenzje-gier.asp?STR=','lista',121,1],
           ['https://www.gry-online.pl/gry-przed-premiera.asp?STR=','lista',5,1],
           ['https://www.gry-online.pl/S017.asp?ROK=','lista',2018,2014]]
+
 
 for i in range(0, 3):
     for post in get_posts(source[i][3], source[i][2], source[i][0], source[i][1]):
@@ -130,7 +128,7 @@ for i in range(0, 3):
         filename = 'posts/' + post[1] + '.txt'
         print(filename)
         if not Path(filename).exists():
-            with open(filename) as f:
+            with open(filename, 'w') as f:
                 f.write(get_post_content(post[0]))
 
 
@@ -142,7 +140,7 @@ for post in get_posts_guide(1, 83, 'https://www.gry-online.pl/poradniki-do-gier.
                 f.write(get_post_content3(post[0]))
 
 
-# for post in get_posts(1, 854, 'https://www.gry-online.pl/gry/22-','lista-gry'): #854 ostatnia strona
+# for post in get_posts(1, 54, 'https://www.gry-online.pl/gry/22-','lista-gry'): #854 ostatnia strona
 #     print(post[1])
 #     print(post[0])
 #     if not Path('posts/' + post[1] + '.txt').exists():
