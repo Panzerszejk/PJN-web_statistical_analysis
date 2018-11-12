@@ -58,7 +58,7 @@ def get_post_content3(url):
     text = ""
 
     while True:
-        for article in soup.find_all('article', {'class': 'word-txt'}):
+        for article in soup.find('article', {'class': 'word-txt'}):
             for paragraph in article.find_all("p",recursive=False):
                 text += "\n" + paragraph.getText()
 
@@ -68,7 +68,7 @@ def get_post_content3(url):
             if btn_a:
                 nextpage = btn.a['href'].split('&')
                 req = Request(url+'&'+nextpage[1], headers={'User-Agent': 'Mozilla/5.0'})
-                print('     '+url+'&'+nextpage[1])
+                #print('     '+url+'&'+nextpage[1])
                 context = ssl._create_unverified_context()
                 webpage = urlopen(req, context=context).read()
                 soup = BeautifulSoup(webpage, 'html.parser')
@@ -114,30 +114,38 @@ def get_posts_guide(start, end, page):
                 posts.append(['https://www.gry-online.pl' + box['href'], box.h4.string])
     return posts
 
-source = [['https://www.gry-online.pl/gry/22-','lista-gry',854,1],
-          ['https://www.gry-online.pl/recenzje-gier.asp?STR=','lista',121,1],
-          ['https://www.gry-online.pl/gry-przed-premiera.asp?STR=','lista',5,1],
-          ['https://www.gry-online.pl/S017.asp?ROK=','lista',2018,2014]]
+source = [['https://www.gry-online.pl/recenzje-gier.asp?STR=','lista',1,123], #123
+          ['https://www.gry-online.pl/gry-przed-premiera.asp?STR=','lista',1,5], #5
+          ['https://www.gry-online.pl/S017.asp?ROK=','lista',2014,2018]]  #2014-2018
 
+for post in get_posts(1, 1, 'https://www.gry-online.pl/gry/22-', 'lista-gry'):
+    print(post[1])
+    print(post[0])
+    post[1] = post[1].replace('/', ':')
+    filename = 'test/' + post[1] + '.txt'
+    print(filename)
+    if not Path(filename).exists():
+        with open(filename, 'w') as f:
+            f.write(get_post_content(post[0]))
 
-for i in range(0, 3):
-    for post in get_posts(source[i][3], source[i][2], source[i][0], source[i][1]):
-        #print(post[1])
-        #print(post[0])
+for i in range(0, 2):
+    for post in get_posts(source[i][2], source[i][3], source[i][0], source[i][1]):
+        print(post[1])
+        print(post[0])
         post[1] = post[1].replace('/', ':')
-        filename = 'posts/' + post[1] + '.txt'
+        filename = 'test/' + post[1] + '.txt'
         print(filename)
         if not Path(filename).exists():
             with open(filename, 'w') as f:
-                f.write(get_post_content(post[0]))
+                f.write(get_post_content2(post[0]))
 
 
-for post in get_posts_guide(1, 83, 'https://www.gry-online.pl/poradniki-do-gier.asp?SOR=1&STR='): #83 ostatnia strona
-        print(post[1])
-        print(post[0])
-        if not Path('posts/' + post[1] + '.txt').exists():
-            with open('posts/' + post[1] + '.txt', 'w') as f:
-                f.write(get_post_content3(post[0]))
+# for post in get_posts_guide(1, 1, 'https://www.gry-online.pl/poradniki-do-gier.asp?SOR=1&STR='): #83 ostatnia strona
+#         print(post[1])
+#         print(post[0])
+#         if not Path('posts/' + post[1] + '.txt').exists():
+#             with open('posts/' + post[1] + '.txt', 'w') as f:
+#                 f.write(get_post_content3(post[0]))
 
 
 # for post in get_posts(1, 54, 'https://www.gry-online.pl/gry/22-','lista-gry'): #854 ostatnia strona
@@ -171,6 +179,6 @@ for post in get_posts_guide(1, 83, 'https://www.gry-online.pl/poradniki-do-gier.
 
 # print(get_posts_guide(4,4,'https://www.gry-online.pl/poradniki-do-gier.asp?SOR=1&STR='))
 # print(get_post_content3('https://www.gry-online.pl/S024.asp?ID=1907'))
-#print(get_post_content2('https://www.gry-online.pl/S020.asp?ID=13040 '))
+# print(get_post_content2('https://www.gry-online.pl/S020.asp?ID=13040'))
 #print(get_post_content2('https://www.gry-online.pl/S020.asp?ID=1366')) #bez stron
 #print(get_post_content('https://www.gry-online.pl/gry/red-dead-redemption-ii/zb4a0f'))
