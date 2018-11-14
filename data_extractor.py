@@ -56,7 +56,7 @@ def get_post_content3(url):
     webpage = urlopen(req, context=context).read()
     soup = BeautifulSoup(webpage, 'html.parser')
     text = ""
-    prevpage = ''
+    prevpage = dict()
     while True:
         for article in soup.find_all('article', {'class': 'word-txt'}):
             for paragraph in article.find_all("p",recursive=False):
@@ -67,15 +67,15 @@ def get_post_content3(url):
             btn_a = btn.find('a', {'class': 'g16np-right'})
             if btn_a:
                 nextpage = btn.a['href'].split('&')
-                if prevpage != nextpage:
+                if nextpage[1] in prevpage:
+                    break
+                else:
                     req = Request(url+'&'+nextpage[1], headers={'User-Agent': 'Mozilla/5.0'})
                     print('     '+url+'&'+nextpage[1])
                     context = ssl._create_unverified_context()
                     webpage = urlopen(req, context=context).read()
                     soup = BeautifulSoup(webpage, 'html.parser')
-                    prevpage = nextpage
-                else:
-                    break
+                    prevpage[nextpage[1]] = 1
             else:
                 break
         else:
@@ -184,6 +184,7 @@ for post in get_posts_guide(1, 83, 'https://www.gry-online.pl/poradniki-do-gier.
 # print(get_posts_guide(4,4,'https://www.gry-online.pl/poradniki-do-gier.asp?SOR=1&STR='))
 # print(get_post_content3('https://www.gry-online.pl/S024.asp?ID=1907'))
 #print(get_post_content3('https://www.gry-online.pl/S024.asp?ID=1336'))
+#print(get_post_content3('https://www.gry-online.pl/S024.asp?ID=303'))
 # print(get_post_content2('https://www.gry-online.pl/S020.asp?ID=13040'))
 #print(get_post_content2('https://www.gry-online.pl/S020.asp?ID=1366')) #bez stron
 #print(get_post_content('https://www.gry-online.pl/gry/red-dead-redemption-ii/zb4a0f'))
