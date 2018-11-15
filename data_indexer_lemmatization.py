@@ -11,7 +11,7 @@ documents_number = len(os.listdir('posts/'))
 lemmas = dict()
 with open('lematy.txt', 'r') as f:
     for line in f:
-        lemmas[line.split('|')[0]] = line.split('|')[1]
+        lemmas[line.split('|')[0].lower()] = line.split('|')[1].lower()
 
 documents_with_term = dict()
 docs_list = []
@@ -57,5 +57,5 @@ with open('dictionary_lemmas.pkl', 'wb') as f:
     pickle.dump(term_weight, f, pickle.HIGHEST_PROTOCOL)
 
 #print(term_weight['w'])
-#print(len(term_weight))
+print(len(term_weight))
 #print("--- %s seconds ---" % (time.time() - start_time))

@@ -4,7 +4,7 @@ from collections import Counter
 from sys import getsizeof
 import pickle
 import time
-#start_time = time.time()
+start_time = time.time()
 
 documents_number = len(os.listdir('posts/'))
 
@@ -49,5 +49,5 @@ with open('dictionary.pkl', 'wb') as f:
     pickle.dump(term_weight, f, pickle.HIGHEST_PROTOCOL)
 
 #print(term_weight['w'])
-#print(getsizeof(term_weight))
-#print("--- %s seconds ---" % (time.time() - start_time))
+print(len(term_weight))
+print("--- %s seconds ---" % (time.time() - start_time))
