@@ -9,7 +9,7 @@ start_time = time.time()
 documents_number = len(os.listdir('posts/'))
 
 documents_with_term = dict()
-docs_list = []
+docs_list = dict()
 for file in os.listdir("posts"):
     if file.endswith(".txt"):
         with open('posts/' + file, 'r') as f:
@@ -23,11 +23,8 @@ for file in os.listdir("posts"):
             temp_list = temp.split()
             temp_set = set(temp_list)
             for term in temp_set:
-                if term not in documents_with_term:
-                    documents_with_term[term] = 1
-                else:
-                    documents_with_term[term] += 1
-            docs_list.append([file, temp_list])
+                documents_with_term[term] = documents_with_term.setdefault(term, 0) + 1
+            docs_list[file] = temp_list
 
 idf_term = dict()
 term_weight = dict()
@@ -39,8 +36,8 @@ for term in documents_with_term:
 del documents_with_term
 
 for document in docs_list:
-    for term in Counter(document[1]).most_common():
-        term_weight[term[0]][document[0]] = term[1] * idf_term[term[0]]
+    for term in Counter(docs_list[document]).most_common():
+        term_weight[term[0]][document] = term[1] * idf_term[term[0]]
 
 del docs_list
 del idf_term
