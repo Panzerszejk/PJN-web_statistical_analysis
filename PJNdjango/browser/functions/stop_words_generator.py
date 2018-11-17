@@ -1,9 +1,10 @@
 import os
 from collections import Counter
+import pickle
 
-def most_common(num):
+def most_common():
     all_text = ""
-    for file in os.listdir("posts"):
+    for file in os.listdir("./../../../posts"):
         if file.endswith(".txt"):
             with open('posts/' + file, 'r') as f:
                 all_text += f.read()
@@ -16,7 +17,9 @@ def most_common(num):
     all_text = all_text.lower()
     word_list = all_text.split()
 
-    return Counter(word_list).most_common(num)
+    most_common = Counter(word_list).most_common()
+    with open('stop_words_common.pkl', 'wb') as f:
+        pickle.dump(most_common, f, pickle.HIGHEST_PROTOCOL)
 
 def new_method(num):
     all_text = ""

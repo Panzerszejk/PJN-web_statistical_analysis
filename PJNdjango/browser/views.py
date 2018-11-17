@@ -1,17 +1,30 @@
 from django.shortcuts import render
+from .functions import stop_words_generator
 import pickle
 import operator
 
 
 def index(request):
-    error = None
+    error = []
     result_result = []
     if request.GET.get('submit'):
         if request.GET.get('search') == "":
-            error = "Empty sring"
+            error.append("Empty sring")
         else:
             term_weights = pickle.load(open("./../dictionary.pkl", "rb"))
             words = request.GET.get('search').split()
+
+            if request.GET.get('stop') == 'on':
+                print("stop")
+                #number = request.GET.get('number')
+                number = 20
+                stop_list = stop_words_generator.most_common(number)
+                for word in words:
+                    for stop in stop_list:
+                        if word == stop:
+                            words.remove(word)
+                            error.append("W frazie wystąpiło stop słowo: "+word)
+
             dict_list = []
             for word in words:
                 dict_list.append(term_weights[word])
