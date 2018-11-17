@@ -49,7 +49,7 @@
         {% if pages %}
         <div class="list-group d-flex justify-content-between align-items-center">
             {% for name, weight in pages %}
-            <a href="#" class="list-group-item list-group-item-action"> {{ name }} <span
+            <a href="result/?name={{name}}" class="list-group-item list-group-item-action"> {{ name }} <span
                     class="badge badge-info badge-pill float-right">{{ weight }}</span></a>
             {% endfor %}
         </div>

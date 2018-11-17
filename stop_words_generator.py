@@ -4,7 +4,7 @@ import pickle
 
 def most_common():
     all_text = ""
-    for file in os.listdir("./../../../posts"):
+    for file in os.listdir("posts"):
         if file.endswith(".txt"):
             with open('posts/' + file, 'r') as f:
                 all_text += f.read()
@@ -18,8 +18,12 @@ def most_common():
     word_list = all_text.split()
 
     most_common = Counter(word_list).most_common()
+    list_common=[]
+    for w in most_common:
+        list_common.append(w[0])
+
     with open('stop_words_common.pkl', 'wb') as f:
-        pickle.dump(most_common, f, pickle.HIGHEST_PROTOCOL)
+        pickle.dump(list_common, f, pickle.HIGHEST_PROTOCOL)
 
 def new_method(num):
     all_text = ""
@@ -46,3 +50,5 @@ def new_method(num):
 
     for key,value in words_dict.items():
         avg_x[key] = value/N
+
+most_common()
