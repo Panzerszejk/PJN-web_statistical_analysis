@@ -2,6 +2,8 @@ import os
 from collections import Counter
 import pickle
 import math
+from operator import itemgetter
+import statistics
 
 def most_common():
     all_text = ""
@@ -26,16 +28,13 @@ def most_common():
     with open('stop_words_common.pkl', 'wb') as f:
         pickle.dump(list_common, f, pickle.HIGHEST_PROTOCOL)
 
-def new_method(num):
+
+def new_method():
     all_text = ""
-    N = 0
-    stop_words = dict()
-    measures = dict()
     for file in os.listdir("posts"):
         if file.endswith(".txt"):
             with open('posts/' + file, 'r') as f:
                 all_text += f.read()
-                N += 1
 
     for char in '.,():;/?#–-"”“„!…':
         all_text = all_text.replace(char, ' ')
@@ -44,43 +43,31 @@ def new_method(num):
     all_text = all_text.replace('\'', '')
     all_text = all_text.lower()
     word_list = all_text.split()
-
-    words_dict = Counter()
-
-    for word in word_list:
-        words_dict[word] += 1
-
-    avg = 0
-    std_dev = 0
-    for key,value in words_dict.items():
-        avg = value/N
-        q = (value - 1) / N
-        xqN = value - q * N
-        std_dev = math.sqrt((xqN*(((q+1)-avg)**2) + (N - xqN)*((q-avg)**2))/(N-1))
-        measures[key] = (avg, std_dev)
-
-    min_avg = avg
-    max_avg = min_avg
-    min_dev = std_dev
-    max_dev = min_dev
-
-    for key, value in measures.items():
-        if value[0] < min_avg:
-            min_avg = value[0]
-        else:
-            if value[0] > max_avg:
-                max_avg=value[0]
-
-        if value[1] < min_dev:
-            min_dev = value[1]
-        else:
-            if value[1] > max_dev:
-                max_dev=value[1]
+    words_count = len(word_list)
+    word_counted = Counter(word_list).most_common()
+    names, vals = map(list, zip(*word_counted))
+    word_mean = statistics.mean(vals)
+    measures = []
+    for i, name in enumerate(names):
+        q = (vals[i] - 1) / words_count
+        measures.append((vals[i] / words_count,
+                         math.sqrt(  ((vals[i] - q * words_count) * (((q+1) - word_mean)**2) +
+                                     (words_count - (vals[i] - q * words_count)) * ((q - word_mean)**2) / (words_count - 1)))))
+    means, sdvs = map(list, zip(*measures))
+    maxavg = max(means)
+    minavg = min(means)
+    maxsdv = max(sdvs)
+    minsdv = min(sdvs)
+    result = dict()
+    for i, name in enumerate(names):
+        result[name] = ((means[i] - minavg)/(maxavg - minavg)) + (1 - ((sdvs[i] - minsdv) / (maxsdv - minsdv)))
+    sorted_result = []
+    for klucz, item in sorted(result.items(), key=itemgetter(1), reverse=True):
+        sorted_result.append(klucz)
+        
+    with open('stop_words_new_common.pkl', 'wb') as f:
+        pickle.dump(sorted_result, f, pickle.HIGHEST_PROTOCOL)
 
 
-    for key, value in measures.items():
-        stop_words[key]=(value[0]-min_avg)/max_avg + 1-(value[1]-min_dev)/max_dev
-
-
-
-most_common()
+# most_common()
+new_method()
