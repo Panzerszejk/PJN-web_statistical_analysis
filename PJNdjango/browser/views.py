@@ -1,9 +1,20 @@
 from django.shortcuts import render
 import pickle
 import operator
+import os
+import time
+pwd = os.path.abspath(os.pardir)
+stop_list = pickle.load(open("../stop_words_common.pkl", "rb"))
+term_weights_lemmas = pickle.load(open("./../dictionary_lemmas.pkl", "rb"))
+term_weights = pickle.load(open("./../dictionary.pkl", "rb"))
+lemmas = dict()
+with open('./../lematy.txt', 'r') as f:
+    for line in f:
+        lemmas[line.split('|')[0].lower()] = line.split('|')[1].lower()
 
 
 def index(request):
+    start_time = time.time()
     error = []
     result_result = []
     if request.GET.get('submit'):
@@ -13,7 +24,6 @@ def index(request):
             words = set(request.GET.get('search').lower().split())
 
             if request.GET.get('stopwords') != 'Stop słowa włączone':
-                stop_list = pickle.load(open("./../stop_words_common.pkl", "rb"))
                 num = 20
                 if request.GET.get('stopwordscount'):
                     num = int(request.GET.get('stopwordscount'))
@@ -26,13 +36,9 @@ def index(request):
                 error = "W szukanej frazie znajdują się same stop słowa"
             else:
                 dict_list = []
-                term_weights = dict()
                 if request.GET.get('lemmatization') == 'on':
-                    term_weights = pickle.load(open("./../dictionary_lemmas.pkl", "rb"))
-                    lemmas = dict()
-                    with open('./../lematy.txt', 'r') as f:
-                        for line in f:
-                            lemmas[line.split('|')[0].lower()] = line.split('|')[1].lower()
+                    global term_weights
+                    term_weights = term_weights_lemmas
                     words_c = words.copy()
                     words.clear()
                     for element in words_c:
@@ -40,8 +46,6 @@ def index(request):
                             words.add(lemmas[element])
                         else:
                             words.add(element)
-                else:
-                    term_weights = pickle.load(open("./../dictionary.pkl", "rb"))
 
                 for word in words:
                     dict_list.append(term_weights[word])
@@ -56,8 +60,9 @@ def index(request):
                 result_result = []
                 for klucz, item in sorted(result.items(), key=operator.itemgetter(1), reverse=True):
                     result_result.append((klucz.replace(".txt", ""), '{:.3f}'.format(round(item, 3))))
-
+    print("--- %s seconds ---" % (time.time() - start_time))
     return render(request, 'index.html', {'error': error, 'pages': result_result})
+
 
 def result(request):
     nazwa = request.GET.get('name')

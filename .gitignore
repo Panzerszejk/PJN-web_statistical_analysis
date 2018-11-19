@@ -1,5 +1,4 @@
 
 posts/*
-dictionary.pkl
 lematy.txt
-dictionary_lemmas.pkl
+*.pkl
