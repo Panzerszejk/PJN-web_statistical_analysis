@@ -5,6 +5,7 @@ import os
 import time
 pwd = os.path.abspath(os.pardir)
 stop_list = pickle.load(open("../stop_words_common.pkl", "rb"))
+stop_list_new = pickle.load(open("../stop_words_new_common.pkl", "rb"))
 term_weights_lemmas = pickle.load(open("./../dictionary_lemmas.pkl", "rb"))
 term_weights = pickle.load(open("./../dictionary.pkl", "rb"))
 lemmas = dict()
@@ -27,10 +28,16 @@ def index(request):
                 num = 20
                 if request.GET.get('stopwordscount'):
                     num = int(request.GET.get('stopwordscount'))
-                for w in words.copy():
-                    if w in stop_list[0:num]:
-                        error = "W frazie znajduje się stop słowo"
-                        words.remove(w)
+                if request.GET.get('stopwords') == 'Stop słowa filtrowane tradycyjnie':
+                    for w in words.copy():
+                        if w in stop_list[0:num]:
+                            error = "W frazie znajduje się stop słowo"
+                            words.remove(w)
+                else:
+                    for w in words.copy():
+                        if w in stop_list_new[0:num]:
+                            error = "W frazie znajduje się stop słowo"
+                            words.remove(w)
 
             if len(words) == 0:
                 error = "W szukanej frazie znajdują się same stop słowa"
