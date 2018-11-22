@@ -99,7 +99,7 @@ def get_posts(start, end, page, divname):
                 else:
                     post.append('https://www.gry-online.pl/' + box.a['href'])
                 header = box.find('h5')
-                shortHeader= header.string.split('–')[0]
+                shortHeader = header.string.split('–')[0]
                 post.append(shortHeader)
                 posts.append(post)
     return posts

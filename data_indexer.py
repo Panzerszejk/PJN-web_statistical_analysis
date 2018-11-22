@@ -45,6 +45,6 @@ del idf_term
 with open('dictionary.pkl', 'wb') as f:
     pickle.dump(term_weight, f, pickle.HIGHEST_PROTOCOL)
 
-#print(term_weight['w'])
+print(term_weight['w'])
 print(len(term_weight))
 print("--- %s seconds ---" % (time.time() - start_time))
